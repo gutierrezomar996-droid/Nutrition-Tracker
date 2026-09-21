@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 
 load_dotenv()
-print(os.getenv('USDA_API_KEY'))
+
 
 def search_food(food_name):
     api_key = os.getenv('USDA_API_KEY')
@@ -15,11 +15,29 @@ def search_food(food_name):
     data = response.json()
     return data
 
+def find_best_match(foods,food_name):
+    food_name_lower = food_name.lower()
+
+
+    for food in foods:
+        description = food["description"].lower()
+        if food_name_lower in description and "raw" in description:
+            return food
+
+    for food in foods:
+        description = food["description"].lower()
+        if food_name_lower == description:
+            return food
+
+    return foods[0]
+    
 
 def get_nutrition(food_name):
     # get raw data from USDA
     data = search_food(food_name)
-    nutrients = data["foods"][0]["foodNutrients"]
+
+    best_match = find_best_match(data["foods"], food_name)
+    nutrients = best_match["foodNutrients"]
 
     # make a translation table
     nutrient_map = {
@@ -55,33 +73,9 @@ def get_nutrition(food_name):
             nutrition[key] = nutrient["value"]
 
     return {
-        "food_name": data["foods"][0]["description"],
+        "food_name": best_match["description"],
         **nutrition
     }
-
-
-
-    #Set Macros to None incase api doesnt call return them. Same with micros
-    calories = None
-    protein = None
-    fat = None
-    carbs = None
-
-    #set micros to None
-    sodium = None
-    fiber = None
-    sugar = None
-    cholesteral = None 
-    potassium = None
-    iron = None
-    zinc = None
-    magnesium = None
-    calcium = None
-    vitamin_a = None
-    vitamin_b = None
-    vitamin_c  = None
-    vitamin_e = None
-    vitamin_k = None
 
 
    
