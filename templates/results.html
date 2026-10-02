@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="results-container">
+    <h2>{{ nutrition.food_name }}</h2>
+
+    <!--Macros-->
+    <div class="macro-card">
+        <h3>Macronutrients</h3>
+        <div class="macro-grid">
+            <div class="macro-item">
+                <span class ="macro-label">Calories</span>
+                <span class ="macro-value">{{ nutrition.calories }}cal</span>
+            </div>
+            <div class="macro-item">
+                <span class="macro-label">Protein</span>
+                <span class ="macro-value">{{ nutrition.protein }}g</span>
+            </div>
+            <div class="macro-item">
+                <span class="macro-label">Carbs</span>
+                <span class="macro-value">{{ nutrition.carbs }}g</span>
+            </div>
+            <div class="macro-item">
+                <span class="macro-label">Fat</span>
+                <span class="macro-value">{{ nutrition.fat }}g</span>
+            </div>
+        </div>
+    </div>
+
+    <!--Micronutrients     (Sodium,Fiber,Sugar,Calcium,Iron,Vitamin_A,Vitamin_C,Cholestoral,Potassium,Magnesium,Zinc)--> 
+    <div class="micro-card">
+        <h3>Micronutrients</h3>
+        <div class="micro-grid">
+            <div class="micro-item">
+                <span>Sodium</span>
+                <span>{{ nutrition.sodium }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Fiber</span>
+                <span>{{ nutrition.fiber }} g</span>
+            </div>
+            <div class="micro-item">
+                <span>Sugar</span>
+                <span>{{ nutrition.sugar }} g</span>
+            </div>
+            <div class="micro-item">
+                <span>Calcium</span>
+                <span>{{ nutrition.calcium }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Iron</span>
+                <span>{{ nutrition.iron }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Vitamin A</span>
+                <span>{{ nutrition.vitamin_a }} IU</span>
+            </div>
+            <div class="micro-item">
+                <span>Vitamin C</span>
+                <span>{{ nutrition.vitamin_c }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Cholesterol</span>
+                <span>{{ nutrition.cholesterol }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Potassium</span>
+                <span>{{ nutrition.potassium }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Magnesium</span>
+                <span>{{ nutrition.magnesium }} mg</span>
+            </div>
+            <div class="micro-item">
+                <span>Zinc</span>
+                <span>{{ nutrition.zinc }} mg</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <!--Create a log meal option-->
+
+    <div class="log-container">
+        <h3>Log this meal</h3>
+        <form action="{{ url_for('log_meal')}}" method="POST">
+            <input type ="hidden" name = "food_name" value ="{{ nutrition.food_name }}">
+            <input type ="hidden" name = "calories" value ="{{ nutrition.calories }}">
+            <input type ="hidden" name = "protein" value ="{{ nutrition.protein }}">
+            <input type ="hidden" name = "fat" value ="{{ nutrition.fat }}">
+            <input type ="hidden" name = "carbs" value ="{{ nutrition.carbs }}">
+            <input type ="hidden" name = "sodium" value = " {{ nutrition.sodium }}">
+            <input type ="hidden" name = "fiber" value = "{{ nutrition.fiber }}">
+            <input type ="hidden" name = "sugar" value = "{{ nutrition.sugar }}">
+            <input type ="hidden" name = "calcium" value = "{{ nutrition.calcium }}">
+            <input type ="hidden" name = "iron" value = "{{ nutrition.iron }}">
+            <input type ="hidden" name = "vitamin_a" value = "{{ nutrition.vitamin_a }}">
+            <input type = "hidden"  name = "vitamin_c" value = "{{ nutrition.vitamin_c}}">
+            <input type = "hidden" name = "cholesterol" value= "{{ nutrition.cholesterol }}">
+            <input type = "hidden" name = "potassium" value ="{{ nutrition.potassium }}">
+            <input type = "hidden" name = "magnesium" value ="{{ nutrition.magnesium }}">
+            <input type = "hidden" name = "zinc" value = "{{ nutrition.zinc }}">
+
+            <!--user selects meal type-->
+            <select name="meal_type">
+                <option value = "breakfast">Breakfast</option>
+                <option value ="lunch">Lunch</option>
+                <option value = "dinner">Dinner</option>
+                <option value = "snack">Snack</option>
+            </select>
+            <button type="submit">Log meal</button>
+        </form>
+
+        <a href="{{ url_for('home') }}">Search another food</a>
+        
+        
+
+    </div>
+</div>
+
+{% endblock %} 

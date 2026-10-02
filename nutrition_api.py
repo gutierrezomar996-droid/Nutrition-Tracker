@@ -15,6 +15,8 @@ def search_food(food_name):
     data = response.json()
     return data
 
+
+
 def find_best_match(foods,food_name):
     food_name_lower = food_name.lower()
 
@@ -30,7 +32,9 @@ def find_best_match(foods,food_name):
             return food
 
     return foods[0]
-    
+
+
+
 
 def get_nutrition(food_name):
     # get raw data from USDA
@@ -71,11 +75,26 @@ def get_nutrition(food_name):
         if name in nutrient_map:
             key = nutrient_map[name]        # translate the name
             nutrition[key] = nutrient["value"]
-
+            
+    # if the database cant access the nutrition it will save and return 0
     return {
-        "food_name": best_match["description"],
-        **nutrition
-    }
+    "food_name": best_match["description"],
+    "calories": nutrition["calories"] or 0,
+    "protein": nutrition["protein"] or 0,
+    "fat": nutrition["fat"] or 0,
+    "carbs": nutrition["carbs"] or 0,
+    "sodium": nutrition["sodium"] or 0,
+    "fiber": nutrition["fiber"] or 0,
+    "sugar": nutrition["sugar"] or 0,
+    "calcium": nutrition["calcium"] or 0,
+    "iron": nutrition["iron"] or 0,
+    "vitamin_a": nutrition["vitamin_a"] or 0,
+    "vitamin_c": nutrition["vitamin_c"] or 0,
+    "cholesterol": nutrition["cholesterol"] or 0,
+    "potassium": nutrition["potassium"] or 0,
+    "magnesium": nutrition["magnesium"] or 0,
+    "zinc": nutrition["zinc"] or 0
+}
 
 
    

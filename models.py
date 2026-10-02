@@ -16,7 +16,7 @@ class Meal(db.Model):
     sodium = db.Column(db.Float)
     fiber = db.Column(db.Float)
     sugar = db.Column(db.Float)
-    cholesteral = db.Column(db.Float)
+    cholesterol = db.Column(db.Float)
     potassium = db.Column(db.Float)
     iron = db.Column(db.Float)
     zinc = db.Column(db.Float)

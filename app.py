@@ -29,12 +29,12 @@ def home():
 @app.route('/search', methods = ['POST'])
 def search():
     food_name = request.form['food_name']
-    nutritoin = get_nutrition(food_name)
+    nutrition = get_nutrition(food_name)
     return render_template('results.html', nutrition=nutrition)
 
 #route for food log
 @app.route('/log', methods =['POST'])
-def lod_meal():
+def log_meal():
     meal = Meal(
         food_name = request.form['food_name'],
         calories = request.form.get('calories', 0),
@@ -55,7 +55,7 @@ def lod_meal():
         meal_type = request.form.get('meal_type')
     )
 
-    db.session(meal)
+    db.session.add(meal)
     db.session.commit()
     return redirect(url_for('history'))
 
@@ -63,7 +63,18 @@ def lod_meal():
 @app.route('/history')
 def history():
     meals = Meal.query.order_by(Meal.date_logged.desc()).all()
-    return render_template('history.html', meals = meals)
+
+    m = meals
+
+    #meal calorie total
+    totals = {
+        'calories': round(sum(m.calories or 0 for m in meals),1),
+        'protein': round(sum(m.protein or 0 for m in meals), 1),
+        'fat': round(sum(m.fat or 0 for m in meals),1),
+        'carbs': round(sum(m.carbs or 0 for m in meals),1)
+    }
+
+    return render_template('history.html', meals = meals, totals=totals)
 
 ##App runner
 @app.route('/delete/<int:meal_id>', methods = ['POST'])

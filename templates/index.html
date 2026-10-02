@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class = "hero">
+    <h2>Track Your Nutrition</h2>
+    <p>Search food</p>
+</div>
+
+<div class="search container">
+    <form action = "{{ url_for('search')}}" method = "POST">
+        <input
+        type = "text"
+        name = "food_name"
+        placholder = "search a food... (e.g. chicken breast,apple,rice)"
+        required>
+        <button type="Submit">Log food</button>
+
+    </form>
+</div>
+
+{% endblock %}

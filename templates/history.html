@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="history-container">
+    <h2>My Meal History</h2>
+<!--checks if any meals have been logged-->
+    {% if meals %}
+    <!--daily totals card-->
+
+    <div class="totals-card">
+        <h3>Todays Totals</h3>
+        <div class="totals-grid">
+            <div class="total-item">
+                <span>Total Calories</span>
+                <span>{{ totals.calories }}cal</span>
+            </div>
+            <div class="total-item">
+                <span>Total Protein</span>
+                <span>{{ totals.protein }}g</span>
+            </div>
+            <div class="total-item">
+                <span>Total Carbs</span>
+                <span>{{ totals.carbs }}g</span>
+            </div>
+            <div class="total-item">
+                <span>Total Fats</span>
+                <span>{{ totals.fat }}g</span>
+            </div>
+        </div>
+    </div>
+
+    {% for meal in meals %}
+    <div class="meal-card">
+        <div class="meal-header">
+            <h3>{{ meal.food_name }}</h3>
+            <span class="meal-type"> {{ meal.meal_type }}</span>
+        </div>
+
+        <div class="meal-macros">
+            <span>Calories: {{ meal.calories }}cal</span>
+            <span>Protein: {{ meal.protein }}g</span>
+            <span>Carbs: {{ meal.carbs }}g</span>
+            <span>Fat: {{ meal.fat }}g</span>
+        </div>
+
+        <div class="meal-micros">
+            <span>Sodium: {{ meal.sodium }}mg </span>
+            <span>Fiber: {{ meal.fiber }}g </span>
+            <span>Sugar: {{ meal.sugar }}g </span>
+            <span>Calcium: {{ meal.calcium }}mg </span>
+            <span>Potassium: {{ meal.potassium }}mg </span>
+            <span>Magnesium: {{ meal.magnesium }}mg </span>
+            <span>Iron: {{ meal.iron }}mg </span>
+            <span>Vitamin A: {{ meal.vitamin_a }}  </span>
+            <span>Vitamin C: {{ meal.vitamin_c }}mg </span>
+            <span>Cholesterol: {{ meal.cholesterol }}mg </span>
+            <span>Zinc: {{ meal.zinc }}mg </span>
+        </div>
+    <!--Delete buttom-->
+        <form action="{{ url_for('delete_meal', meal_id= meal.id) }}" method="POST" >
+            <button type="submit" class="delete-btn">Click to remove</button>
+        </form>
+        </div>
+        {% endfor %}
+
+    <!--IF no meals are entered-->
+    {% else %}
+    <div class="empty-state">
+        <p>No Meals logged yet</p>
+        <a href="{{ url_for('home') }}">Search food to get started</a>
+
+    </div>
+    {% endif %}
+
+
+</div>
+
+{% endblock %}
