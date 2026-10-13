@@ -7,14 +7,14 @@
     <p>Search food</p>
 </div>
 
-<div class="search container">
+<div class="search-container">
     <form action = "{{ url_for('search')}}" method = "POST">
         <input
         type = "text"
         name = "food_name"
         placholder = "search a food... (e.g. chicken breast,apple,rice)"
         required>
-        <button type="Submit">Log food</button>
+        <button type="Submit">Search</button>
 
     </form>
 </div>
