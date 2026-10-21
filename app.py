@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from models import db, Meal
 from nutrition_api import get_nutrition
 from dotenv import load_dotenv
@@ -7,6 +7,8 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'nutrition-tracker-secret-key'
 
 ##Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///nutrition.db'     ##Where to store data
@@ -25,18 +27,36 @@ def home():
     return render_template('index.html')
 
 
+
+@app.route('/settings', methods = ['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        calorie_goal = request.form.get('calorie_goal', 2000)  #2000 is the default cals. User can manually enter later.
+        session['calorie_goal'] = int(calorie_goal)
+        return redirect(url_for('history'))
+    current_goal = session.get('calorie_goal', 2000)
+    return render_template('settings.html', current_goal=current_goal)
+
+
 #route for search
 @app.route('/search', methods = ['POST'])
 def search():
     food_name = request.form['food_name']
-    nutrition = get_nutrition(food_name)
+
+    grams_input = request.form.get('grams', '').strip()  ## handles if user leaves grams section blank
+    grams = float(grams_input) if grams_input else 100.0
+        
+    nutrition = get_nutrition(food_name, grams)
     return render_template('results.html', nutrition=nutrition)
+
+
 
 #route for food log
 @app.route('/log', methods =['POST'])
 def log_meal():
     meal = Meal(
         food_name = request.form['food_name'],
+        serving_size = request.form.get('serving_size'),
         calories = request.form.get('calories', 0),
         protein = request.form.get('protein', 0),
         fat = request.form.get('fat', 0),
@@ -74,7 +94,12 @@ def history():
         'carbs': round(sum(m.carbs or 0 for m in meals),1)
     }
 
-    return render_template('history.html', meals = meals, totals=totals)
+    calorie_goal = session.get('calorie_goal', 2000)
+    remaining = round(calorie_goal - totals['calories'], 1)
+
+    return render_template('history.html', meals = meals, totals=totals, calorie_goal=calorie_goal, remaining=remaining)
+
+
 
 ##App runner
 @app.route('/delete/<int:meal_id>', methods = ['POST'])
@@ -83,6 +108,8 @@ def delete_meal(meal_id):
     db.session.delete(meal)
     db.session.commit()
     return redirect(url_for('history'))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

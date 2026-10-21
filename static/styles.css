@@ -76,6 +76,14 @@ main {
     text-decoration: underline;
 }
 
+
+.serving-size {
+    color: var(--text-dark);
+    font-size: 1rem;
+    margin-bottom: 16px;
+}
+
+
 .hero {
     text-align: center;
     padding: 48px 0 32px 0;
@@ -216,14 +224,13 @@ main {
 
 
 /* Totals card */
-.totals-card {
+.totals-card{
     background-color: var(--primary);
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 24px;
     color: white;
 }
-
 .totals-card h3 {
     font-size: 1rem;
     text-transform: uppercase;
@@ -244,6 +251,7 @@ main {
     align-items: center;
     text-align: center;
 }
+
 
 .total-item span:first-child {
     font-size: 0.85rem;

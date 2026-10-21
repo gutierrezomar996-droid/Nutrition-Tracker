@@ -3,6 +3,9 @@
 
 <div class="results-container">
     <h2>{{ nutrition.food_name }}</h2>
+    {% if nutrition.serving_size %}
+    <p class="serving-size">Serving size: {{ nutrition.serving_size }}g</p>
+    {% endif %}
 
     <!--Macros-->
     <div class="macro-card">
@@ -100,6 +103,7 @@
             <input type = "hidden" name = "potassium" value ="{{ nutrition.potassium }}">
             <input type = "hidden" name = "magnesium" value ="{{ nutrition.magnesium }}">
             <input type = "hidden" name = "zinc" value = "{{ nutrition.zinc }}">
+            <input type ="hidden" name ="serving_size" value = "{{ nutrition.serving_size }}">
 
             <!--user selects meal type-->
             <select name="meal_type">

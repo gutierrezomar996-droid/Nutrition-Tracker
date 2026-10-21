@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="hero">
+    <h2>Calorie Goal Settings</h2>
+    <p>Set Daily Calorie Intake</p>
+    <p>Current goal: <strong>{{ current_goal }}</strong> calories</p>
+</div>
+
+<div class="search-container">
+    <form action = "{{ url_for('settings')}}" method="POST">
+        <input type = number name ="calorie_goal" placeholder="Enter calorie goal" required>
+        <button type="submit">Enter</button>
+
+    </form>
+
+</div>
+
+
+
+
+{% endblock %}

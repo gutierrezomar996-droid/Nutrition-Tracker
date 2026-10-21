@@ -11,8 +11,17 @@
         <h3>Todays Totals</h3>
         <div class="totals-grid">
             <div class="total-item">
-                <span>Total Calories</span>
+                <span>Total Calories Consumed</span>
                 <span>{{ totals.calories }}cal</span>
+
+            </div>
+             <div class="total-item">
+                <span>Calorie Goal</span>
+                <span>{{ calorie_goal }}cal</span>
+            </div>
+            <div class="total-item {% if remaining >= 0 %}remaining-good{% else %}remaining-over{% endif %}">
+                <span>Calories Remaining</span>
+                <span>{{ remaining }}cal</span>
             </div>
             <div class="total-item">
                 <span>Total Protein</span>
@@ -34,7 +43,8 @@
         <div class="meal-header">
             <h3>{{ meal.food_name }}</h3>
             <span class="meal-type"> {{ meal.meal_type }}</span>
-        </div>
+            <p class="serving-size">Serving Size: {{ meal.serving_size }}g</p>
+       </div>
 
         <div class="meal-macros">
             <span>Calories: {{ meal.calories }}cal</span>

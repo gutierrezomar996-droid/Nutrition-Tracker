@@ -36,12 +36,13 @@ def find_best_match(foods,food_name):
 
 
 
-def get_nutrition(food_name):
+def get_nutrition(food_name, grams=100):
+
     # get raw data from USDA
     data = search_food(food_name)
-
     best_match = find_best_match(data["foods"], food_name)
     nutrients = best_match["foodNutrients"]
+    multiplier = grams / 100 # --> grams multiplier
 
     # make a translation table
     nutrient_map = {
@@ -79,21 +80,22 @@ def get_nutrition(food_name):
     # if the database cant access the nutrition it will save and return 0
     return {
     "food_name": best_match["description"],
-    "calories": nutrition["calories"] or 0,
-    "protein": nutrition["protein"] or 0,
-    "fat": nutrition["fat"] or 0,
-    "carbs": nutrition["carbs"] or 0,
-    "sodium": nutrition["sodium"] or 0,
-    "fiber": nutrition["fiber"] or 0,
-    "sugar": nutrition["sugar"] or 0,
-    "calcium": nutrition["calcium"] or 0,
-    "iron": nutrition["iron"] or 0,
-    "vitamin_a": nutrition["vitamin_a"] or 0,
-    "vitamin_c": nutrition["vitamin_c"] or 0,
-    "cholesterol": nutrition["cholesterol"] or 0,
-    "potassium": nutrition["potassium"] or 0,
-    "magnesium": nutrition["magnesium"] or 0,
-    "zinc": nutrition["zinc"] or 0
+    "serving_size": grams,
+    "calories": round((nutrition["calories"] or 0) * multiplier, 2), # 2 = round to 2 decimals
+    "protein": round((nutrition["protein"] or 0) * multiplier, 2),
+    "fat": round((nutrition["fat"] or 0) * multiplier, 2),
+    "carbs": round((nutrition["carbs"] or 0) * multiplier, 2),
+    "sodium": round((nutrition["sodium"] or 0) * multiplier, 2),
+    "fiber": round((nutrition["fiber"] or 0) * multiplier, 2),
+    "sugar": round((nutrition["sugar"] or 0) * multiplier, 2),
+    "calcium": round((nutrition["calcium"] or 0) * multiplier, 2),
+    "iron": round((nutrition["iron"] or 0) *multiplier, 2),
+    "vitamin_a": round((nutrition["vitamin_a"] or 0) * multiplier, 2),
+    "vitamin_c": round((nutrition["vitamin_c"] or 0) * multiplier, 2),
+    "cholesterol": round((nutrition["cholesterol"] or 0) * multiplier, 2),
+    "potassium": round((nutrition["potassium"] or 0) * multiplier, 2),
+    "magnesium": round((nutrition["magnesium"] or 0) * multiplier, 2),
+    "zinc": round((nutrition["zinc"] or 0) * multiplier, 2),
 }
 
 
