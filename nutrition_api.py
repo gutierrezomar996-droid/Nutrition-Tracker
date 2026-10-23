@@ -4,98 +4,66 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 def search_food(food_name):
-    api_key = os.getenv('USDA_API_KEY')
+    #search URL
+    url = f"https://world.openfoodfacts.org/cgi/search.pl?search_terms={food_name}&json=true&page_5&lc=en&countries_tags=en:united-states"
 
-    url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_name}&api_key={api_key}"
-
-    response  = requests.get(url)
-
+    #Identify app to open food facts
+    headers =  {'User-Agent': 'Nutrition-Tracker/1.0'} 
+    response  = requests.get(url, headers=headers)
     data = response.json()
     return data
 
-
-
-def find_best_match(foods,food_name):
+#find the closest matching product to the search
+def find_best_match(products,food_name):
     food_name_lower = food_name.lower()
-
-
-    for food in foods:
-        description = food["description"].lower()
-        if food_name_lower in description and "raw" in description:
-            return food
-
-    for food in foods:
-        description = food["description"].lower()
-        if food_name_lower == description:
-            return food
-
-    return foods[0]
-
-
+    #loop to find closest matching name
+    for product in products:
+       name = product.get("product_name", "").lower()   #if product has no name, returns empty string
+       if food_name_lower in name or name in food_name_lower:
+        return product
+    # if else to fallback to the first result
+    if products:
+        return products[0]
+    else:
+        None
 
 
 def get_nutrition(food_name, grams=100):
-
-    # get raw data from USDA
     data = search_food(food_name)
-    best_match = find_best_match(data["foods"], food_name)
-    nutrients = best_match["foodNutrients"]
+    #returns empty list if none are found
+    products = data.get("products", [])     
+    if not products:            #exits early if no data is found
+        return None
+    #returns empty list i
+    best_match = find_best_match(products, food_name)
+    if not best_match:      #--> exits early if no data is found
+        return None
+    
+    #reaches to this point if data is found and gets returned.
+    nutrition = best_match.get("nutriments", {}) # --> nutriments is the key word for finding nutrients from api request
+
     multiplier = grams / 100 # --> grams multiplier
-
-    # make a translation table
-    nutrient_map = {
-        "Energy": "calories", 
-        "Protein": "protein", 
-        "Total lipid (fat)": "fat", 
-        "Carbohydrate, by difference": "carbs", 
-        "Sodium, Na": "sodium", 
-        "Fiber, total dietary": "fiber", 
-        "Total Sugars": "sugar", 
-        "Calcium, Ca": "calcium", 
-        "Iron, Fe": "iron", 
-        "Vitamin A, IU": "vitamin_a",
-        "Vitamin C, total ascorbic acid": "vitamin_c", 
-        "Cholesterol": "cholesterol", 
-        "Potassium, K": "potassium", 
-        "Magnesium, Mg": "magnesium", 
-        "Zinc, Zn": "zinc" 
-
-
-    }
-
-    # create empty dictionary and set keys to None
-    nutrition = {key: None for key in nutrient_map.values()}
-
-    #loop through every nutrient returned
-    for nutrient in nutrients:
-        name = nutrient["nutrientName"]
-        
-        # loop and select only nutrients you care abt
-        if name in nutrient_map:
-            key = nutrient_map[name]        # translate the name
-            nutrition[key] = nutrient["value"]
             
     # if the database cant access the nutrition it will save and return 0
     return {
-    "food_name": best_match["description"],
+    "food_name": best_match.get("product_name", food_name),  # --> food_name parameter returns original searched name if api doesnt return one.
     "serving_size": grams,
-    "calories": round((nutrition["calories"] or 0) * multiplier, 2), # 2 = round to 2 decimals
-    "protein": round((nutrition["protein"] or 0) * multiplier, 2),
-    "fat": round((nutrition["fat"] or 0) * multiplier, 2),
-    "carbs": round((nutrition["carbs"] or 0) * multiplier, 2),
-    "sodium": round((nutrition["sodium"] or 0) * multiplier, 2),
-    "fiber": round((nutrition["fiber"] or 0) * multiplier, 2),
-    "sugar": round((nutrition["sugar"] or 0) * multiplier, 2),
-    "calcium": round((nutrition["calcium"] or 0) * multiplier, 2),
-    "iron": round((nutrition["iron"] or 0) *multiplier, 2),
-    "vitamin_a": round((nutrition["vitamin_a"] or 0) * multiplier, 2),
-    "vitamin_c": round((nutrition["vitamin_c"] or 0) * multiplier, 2),
-    "cholesterol": round((nutrition["cholesterol"] or 0) * multiplier, 2),
-    "potassium": round((nutrition["potassium"] or 0) * multiplier, 2),
-    "magnesium": round((nutrition["magnesium"] or 0) * multiplier, 2),
-    "zinc": round((nutrition["zinc"] or 0) * multiplier, 2),
+    "calories": round((nutrition.get("energy-kcal_100g") or 0) * multiplier, 2), # 2 = round to 2 decimals
+    "protein": round((nutrition.get("protiens_100g") or 0) * multiplier, 2),
+    "fat": round((nutrition.get("fat_100g") or 0) * multiplier, 2),
+    "carbs": round((nutrition.get("carbohydrates_100g") or 0) * multiplier, 2),
+    "sodium": round((nutrition.get("sodium_100g") or 0) * multiplier, 2),
+    "fiber": round((nutrition.get("fiber_100g") or 0) * multiplier, 2),
+    "sugar": round((nutrition.get("sugars_100g")or 0) * multiplier, 2),
+    "calcium": round((nutrition.get("calcium_100g") or 0) * multiplier, 2),
+    "iron": round((nutrition.get("iron_100g") or 0) *multiplier, 2),
+    "vitamin_a": round((nutrition.get("vitamin-a_100g") or 0) * multiplier, 2),
+    "vitamin_c": round((nutrition.get("vitamin-c_100g") or 0) * multiplier, 2),
+    "cholesterol": round((nutrition.get("cholesterol_100g") or 0) * multiplier, 2),
+    "potassium": round((nutrition.get("potassium_100g") or 0) * multiplier, 2),
+    "magnesium": round((nutrition.get("magnesium_100g") or 0) * multiplier, 2),
+    "zinc": round((nutrition.get("zinc_100g")or 0) * multiplier, 2),
 }
 
 
