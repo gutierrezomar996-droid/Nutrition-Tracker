@@ -6,13 +6,21 @@ load_dotenv()
 
 def search_food(food_name):
     #search URL
-    url = f"https://world.openfoodfacts.org/cgi/search.pl?search_terms={food_name}&json=true&page_5&lc=en&countries_tags=en:united-states"
+    url = f"https://world.openfoodfacts.org/cgi/search.pl?search_terms={food_name}&json=true&page_size=10"
 
     #Identify app to open food facts
     headers =  {'User-Agent': 'Nutrition-Tracker/1.0'} 
     response  = requests.get(url, headers=headers)
-    data = response.json()
-    return data
+
+    # handle empty or invalid responses
+    if response.status_code != 200 or not response.text:
+        return {"products": []}
+
+    try:
+        data = response.json()
+        return data
+    except Exception:
+        return {"products: []"}
 
 #find the closest matching product to the search
 def find_best_match(products,food_name):
