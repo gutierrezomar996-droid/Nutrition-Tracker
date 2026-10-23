@@ -58,7 +58,7 @@ def get_nutrition(food_name, grams=100):
     "food_name": best_match.get("product_name", food_name),  # --> food_name parameter returns original searched name if api doesnt return one.
     "serving_size": grams,
     "calories": round((nutrition.get("energy-kcal_100g") or 0) * multiplier, 2), # 2 = round to 2 decimals
-    "protein": round((nutrition.get("protiens_100g") or 0) * multiplier, 2),
+    "protein": round((nutrition.get("proteins_100g") or 0) * multiplier, 2),
     "fat": round((nutrition.get("fat_100g") or 0) * multiplier, 2),
     "carbs": round((nutrition.get("carbohydrates_100g") or 0) * multiplier, 2),
     "sodium": round((nutrition.get("sodium_100g") or 0) * multiplier, 2),
