@@ -47,7 +47,11 @@ def search():
     grams = float(grams_input) if grams_input else 100.0
         
     nutrition = get_nutrition(food_name, grams)
+
+    if nutrition is None:
+        return render_template('index.html', error="Food not found. Try searching a different food method.")
     return render_template('results.html', nutrition=nutrition)
+
 
 
 

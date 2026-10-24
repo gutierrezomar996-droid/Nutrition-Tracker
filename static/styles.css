@@ -353,3 +353,9 @@ main {
     text-decoration: none;
     font-weight: 600;
 }
+
+.error-message {
+    padding: 5px;
+    font-size: 1rem;
+    text-align: center;
+}
